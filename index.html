@@ -419,6 +419,18 @@ fetch('http://127.0.0.1:5000/vehicules')
     });
   });
 
+  fetch('http://127.0.0.1:5000/dashboard')
+  .then(res => res.json())
+  .then(data => {
+    const div = document.querySelector('#dashboard');
+    div.innerHTML = `
+       Véhicules disponibles: ${data.vehicules_dispo}<br>
+       Chauffeurs disponibles: ${data.chauffeurs_dispo}<br>
+       Trajets aujourd'hui: ${data.trajets_today}
+    `;
+  });
+
+
 </body>
 
 </html>
