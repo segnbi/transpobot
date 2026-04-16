@@ -232,15 +232,26 @@
       background: #fee2e2;
       color: #991b1b;
     }
+
+    .voitures,
+    .chauffeurs {
+      color: white;
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <span>🚌</span>
+    <a href="./index.html">
+      <span>🚌</span>
+    </a>
     <div>
       <h1>TranspoBot</h1>
       <small>Assistant IA — Gestion de Transport</small>
+    </div>
+    <div>
+      <a href="./voitures.html" class="voitures">Voitures</a>
+      <a href="./chauffeurs.html" class="chauffeurs">Chauffeurs</a>
     </div>
   </header>
 
@@ -309,7 +320,7 @@
   </div>
 
   <script>
-    const API = '';  // Remplacer par l'URL de votre backend
+    const API = 'http://localhost:8000';  // Remplacer par l'URL de votre backend
 
     async function loadStats() {
       try {
