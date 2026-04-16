@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TranspoBot — Assistant IA Transport</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+    }
+
+    header {
+      background: #1a56db;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+    }
+
+    header span {
+      font-size: 2rem;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat {
+      background: #eff6ff;
+      border-radius: 8px;
+      padding: 0.8rem;
+      text-align: center;
+    }
+
+    .stat .val {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #1a56db;
+    }
+
+    .stat .lbl {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Chat */
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: #f8fafc;
+    }
+
+    .msg {
+      margin-bottom: 0.8rem;
+    }
+
+    .msg.user .bubble {
+      background: #1a56db;
+      color: white;
+      margin-left: auto;
+    }
+
+    .msg.bot .bubble {
+      background: white;
+      border: 1px solid #e2e8f0;
+    }
+
+    .bubble {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      max-width: 85%;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .msg.user {
+      text-align: right;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .chat-input input:focus {
+      border-color: #1a56db;
+    }
+
+    .chat-input button {
+      background: #1a56db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .chat-input button:hover {
+      background: #1e40af;
+    }
+
+    .sql-preview {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: monospace;
+      font-size: 0.78rem;
+      padding: 0.6rem;
+      border-radius: 6px;
+      margin-top: 0.4rem;
+      white-space: pre-wrap;
+    }
+
+    /* Suggestions */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .suggestions button {
+      background: #eff6ff;
+      color: #1a56db;
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .suggestions button:hover {
+      background: #dbeafe;
+    }
+
+    .results table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .results th {
+      background: #1a56db;
+      color: white;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    .results td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .results tr:hover td {
+      background: #f0f4f8;
+    }
+
+    h2 {
+      font-size: 1rem;
+      color: #374151;
+      margin-bottom: 0.8rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-orange {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .badge-red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .voitures,
+    .chauffeurs {
+      color: white;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      margin-top: 2rem;
+    }
+
+    .table-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #334155;
+      margin-bottom: 1.5rem;
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    .custom-table th {
+      background-color: #1d4ed8;
+      color: white;
+      text-align: left;
+      padding: 12px 15px;
+      font-weight: 600;
+    }
+
+    .custom-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #475569;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .status-actif {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-maintenance {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .status-hors_service {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .voitures,
+    .chauffeurs {
+      color: white;
+      text-decoration: none;
+      margin-left: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a href="./index.html">
+      <span>🚌</span>
+    </a>
+    <div>
+      <h1>TranspoBot</h1>
+      <small>Assistant IA — Gestion de Transport</small>
+    </div>
+    <div>
+      <a href="./voitures.html" class="voitures">Voitures</a>
+      <a href="./chauffeurs.html" class="chauffeurs">Chauffeurs</a>
+    </div>
+  </header>
+
+  <div class="container" style="display: block;">
+    <div class="table-container">
+      <div class="table-title">
+        <span style="font-size: 1.4rem;">👥</span> Liste des Chauffeurs
+      </div>
+
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Nom & Prénom</th>
+            <th>Téléphone</th>
+            <th>N° Permis</th>
+            <th>Cat.</th>
+            <th>Disponibilité</th>
+          </tr>
+        </thead>
+        <tbody id="chauffeurs-body">
+          <tr>
+            <td colspan="5" style="text-align:center;">Chargement des chauffeurs...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8000';
+
+    async function loadDrivers() {
+      const tbody = document.getElementById('chauffeurs-body');
+      try {
+        const r = await fetch(`${API}/api/chauffeurs`);
+        const chauffeurs = await r.json();
+
+        tbody.innerHTML = '';
+
+        chauffeurs.forEach(c => {
+          const row = document.createElement('tr');
+
+          const dispoLabel = c.disponibilite ? 'Disponible' : 'En service';
+          const dispoClass = c.disponibilite ? 'status-actif' : 'status-maintenance';
+
+          row.innerHTML = `
+            <td style="font-weight:500;">${c.nom.toUpperCase()} ${c.prenom}</td>
+            <td>${c.telephone || 'N/A'}</td>
+            <td><code>${c.numero_permis}</code></td>
+            <td><span class="badge" style="background:#f1f5f9; color:#475569;">${c.categorie_permis}</span></td>
+            <td><span class="status-badge ${dispoClass}">${dispoLabel}</span></td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (e) {
+        console.warn('Erreur lors du chargement:', e);
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Erreur de connexion au serveur API</td></tr>';
+      }
+    }
+
+    loadDrivers();
+  </script>
+</body>
+
+</html>
