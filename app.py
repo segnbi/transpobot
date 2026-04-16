@@ -174,3 +174,28 @@ def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+from datetime import date
+
+@app.get("/dashboard")
+def dashboard():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT COUNT(*) AS dispo FROM vehicules WHERE statut='disponible'")
+    vehicules_dispo = cursor.fetchone()["dispo"]
+
+    cursor.execute("SELECT COUNT(*) AS dispo FROM chauffeurs WHERE statut='disponible'")
+    chauffeurs_dispo = cursor.fetchone()["dispo"]
+
+    cursor.execute("SELECT COUNT(*) AS today FROM trajets WHERE DATE(date)=CURDATE()")
+    trajets_today = cursor.fetchone()["today"]
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "vehicules_dispo": vehicules_dispo,
+        "chauffeurs_dispo": chauffeurs_dispo,
+        "trajets_today": trajets_today
+    }
