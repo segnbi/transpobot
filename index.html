@@ -397,66 +397,6 @@
     loadStats();
     loadTrajets();
   </script>
-
-<div id="dashboard"></div>
-<script>
-  fetch('http://127.0.0.1:8000/dashboard')
-    .then(res => res.json())
-    .then(data => {
-      document.querySelector('#dashboard').innerHTML = `
-        🚍 Véhicules disponibles: ${data.vehicules_dispo}<br>
-        👨‍✈️ Chauffeurs disponibles: ${data.chauffeurs_dispo}<br>
-        📊 Trajets aujourd'hui: ${data.trajets_today}
-      `;
-    });
-</script>
-<table id="vehiculesTable">
-  <thead>
-    <tr><th>Immatriculation</th><th>Type</th><th>Statut</th></tr>
-  </thead>
-  <tbody></tbody>
-</table>
-<script>
-fetch('http://127.0.0.1:8000/vehicules')
-  .then(res => res.json())
-  .then(data => {
-    const tbody = document.querySelector('#vehiculesTable tbody');
-    data.forEach(v => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td>${v.immatriculation}</td><td>${v.type}</td><td>${v.statut}</td>`;
-      tbody.appendChild(row);
-    });
-  });
-</script>
-
-<ul id="chauffeursList"></ul>
-<script>
-fetch('http://127.0.0.1:8000/chauffeurs')
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.querySelector('#chauffeursList');
-    data.forEach(c => {
-      const li = document.createElement('li');
-      li.textContent = `${c.nom} ${c.prenom} - ${c.statut}`;
-      ul.appendChild(li);
-    });
-  });
-</script>
-
-<ul id="trajetsList"></ul>
-<script>
-fetch('http://127.0.0.1:8000/trajets')
-  .then(res => res.json())
-  .then(data => {
-    const ul = document.querySelector('#trajetsList');
-    data.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = `Vehicule ${t.vehicule_id}: ${t.depart} → ${t.arrivee} (${t.duree})`;
-      ul.appendChild(li);
-    });
-  });
-</script>
-
 </body>
 
 </html>

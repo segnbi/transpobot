@@ -13,16 +13,6 @@ import re
 import httpx
 
 app = FastAPI(title="TranspoBot API", version="1.0.0")
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # autorise toutes les origines
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-Q
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,7 +25,7 @@ app.add_middleware(
 DB_CONFIG = {
     "host":     os.getenv("DB_HOST", "localhost"),
     "user":     os.getenv("DB_USER", "root"),
-    "password": os.getenv("DB_PASSWORD", ""),
+    "password": os.getenv("DB_PASSWORD", "root"),
     "database": os.getenv("DB_NAME", "transpobot"),
 }
 
@@ -184,28 +174,3 @@ def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
-
-from datetime import date
-
-@app.get("/dashboard")
-def dashboard():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("SELECT COUNT(*) AS dispo FROM vehicules WHERE statut='disponible'")
-    vehicules_dispo = cursor.fetchone()["dispo"]
-
-    cursor.execute("SELECT COUNT(*) AS dispo FROM chauffeurs WHERE statut='disponible'")
-    chauffeurs_dispo = cursor.fetchone()["dispo"]
-
-    cursor.execute("SELECT COUNT(*) AS today FROM trajets WHERE DATE(date)=CURDATE()")
-    trajets_today = cursor.fetchone()["today"]
-
-    cursor.close()
-    conn.close()
-
-    return {
-        "vehicules_dispo": vehicules_dispo,
-        "chauffeurs_dispo": chauffeurs_dispo,
-        "trajets_today": trajets_today
-    }
