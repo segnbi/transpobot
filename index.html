@@ -386,7 +386,27 @@
     loadStats();
     loadTrajets();
   </script>
-fetch('http://127.0.0.1:5000/vehicules')
+
+<div id="dashboard"></div>
+<script>
+  fetch('http://127.0.0.1:8000/dashboard')
+    .then(res => res.json())
+    .then(data => {
+      document.querySelector('#dashboard').innerHTML = `
+        🚍 Véhicules disponibles: ${data.vehicules_dispo}<br>
+        👨‍✈️ Chauffeurs disponibles: ${data.chauffeurs_dispo}<br>
+        📊 Trajets aujourd'hui: ${data.trajets_today}
+      `;
+    });
+</script>
+<table id="vehiculesTable">
+  <thead>
+    <tr><th>Immatriculation</th><th>Type</th><th>Statut</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+<script>
+fetch('http://127.0.0.1:8000/vehicules')
   .then(res => res.json())
   .then(data => {
     const tbody = document.querySelector('#vehiculesTable tbody');
@@ -396,19 +416,25 @@ fetch('http://127.0.0.1:5000/vehicules')
       tbody.appendChild(row);
     });
   });
+</script>
 
-  fetch('http://127.0.0.1:5000/chauffeurs')
+<ul id="chauffeursList"></ul>
+<script>
+fetch('http://127.0.0.1:8000/chauffeurs')
   .then(res => res.json())
   .then(data => {
     const ul = document.querySelector('#chauffeursList');
     data.forEach(c => {
       const li = document.createElement('li');
-      li.textContent = `${c.nom} ${c.prenom} – ${c.statut}`;
+      li.textContent = `${c.nom} ${c.prenom} - ${c.statut}`;
       ul.appendChild(li);
     });
   });
+</script>
 
-  fetch('http://127.0.0.1:5000/trajets')
+<ul id="trajetsList"></ul>
+<script>
+fetch('http://127.0.0.1:8000/trajets')
   .then(res => res.json())
   .then(data => {
     const ul = document.querySelector('#trajetsList');
@@ -418,18 +444,7 @@ fetch('http://127.0.0.1:5000/vehicules')
       ul.appendChild(li);
     });
   });
-
-  fetch('http://127.0.0.1:5000/dashboard')
-  .then(res => res.json())
-  .then(data => {
-    const div = document.querySelector('#dashboard');
-    div.innerHTML = `
-       Véhicules disponibles: ${data.vehicules_dispo}<br>
-       Chauffeurs disponibles: ${data.chauffeurs_dispo}<br>
-       Trajets aujourd'hui: ${data.trajets_today}
-    `;
-  });
-
+</script>
 
 </body>
 
