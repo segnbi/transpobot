@@ -181,7 +181,6 @@
       background: #dbeafe;
     }
 
-    /* Table résultats */
     .results table {
       width: 100%;
       border-collapse: collapse;
@@ -238,7 +237,6 @@
       color: white;
     }
 
-    /* Nouveau style inspiré de l'image "Trajets récents" */
     .table-container {
       background: white;
       border-radius: 15px;
@@ -265,7 +263,6 @@
 
     .custom-table th {
       background-color: #1d4ed8;
-      /* Bleu intense de l'image */
       color: white;
       text-align: left;
       padding: 12px 15px;
@@ -278,7 +275,6 @@
       color: #475569;
     }
 
-    /* Style des badges de statut */
     .status-badge {
       padding: 4px 12px;
       border-radius: 20px;
@@ -291,13 +287,11 @@
       color: #166534;
     }
 
-    /* Équivalent "terminé" */
     .status-maintenance {
       background: #fff7ed;
       color: #9a3412;
     }
 
-    /* Équivalent "en_cours" */
     .status-hors_service {
       background: #fee2e2;
       color: #991b1b;
@@ -361,12 +355,11 @@
         const r = await fetch(`${API}/api/chauffeurs`);
         const chauffeurs = await r.json();
 
-        tbody.innerHTML = ''; // Nettoyage de la table
+        tbody.innerHTML = '';
 
         chauffeurs.forEach(c => {
           const row = document.createElement('tr');
 
-          // Style de badge basé sur le statut BOOLEAN 'disponibilite'
           const dispoLabel = c.disponibilite ? 'Disponible' : 'En service';
           const dispoClass = c.disponibilite ? 'status-actif' : 'status-maintenance';
 
